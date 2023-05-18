@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "mqttsink"
+version = "0.1.0"
+description = ""
+authors = ["Yann Belin <yann.belin@expereo.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+paho-mqtt = "^1.6.1"
+requests = "^2.30.0"
+
+
+[tool.poetry.group.dev.dependencies]
+bandit = "^1.7.5"
+black = "^23.3.0"
+mypy = "^1.2.0"
+types-paho-mqtt = "^1.6.0.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

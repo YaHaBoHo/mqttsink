@@ -1,0 +1,21 @@
+{
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "python.linting.enabled": false,
+    "python.linting.pylintEnabled": false,
+    "python.linting.lintOnSave": true,
+    "pylint.importStrategy": "fromEnvironment",
+    "pylint.args": [
+        "--disable=all",
+        "--enable=E,C,W",
+        "--disable=C0330",
+        "--disable=C0114,C0115,C0116",
+        "--good-names=i,j,k,x,y,_,rc"
+    ],
+    "python.linting.banditEnabled": true,
+    "python.linting.banditArgs": [
+        "--severity-level=all",
+        "--configfile=pyproject.toml"
+    ],
+    "python.linting.mypyEnabled": true
+}

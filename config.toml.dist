@@ -1,0 +1,27 @@
+[sink]
+name = "mqttsink"
+hostname = "localhost"
+port = 1883
+username = "xxx"
+password = "xxx"
+
+
+[tap]
+
+  [tap.random]
+    [tap.random.lab]
+        interval = 10
+        [tap.random.test.blueprint]
+          foo = [10, 20]
+          bar = [0, 100]
+
+  [tap.aranet]
+    [tap.aranet.lab]
+        hostname = "localhost"
+        username = "xxx"
+        password = "xxx"
+        verify = false
+        [tap.aranet.homelab.sensors]
+          "123" = "kitchen"
+          "456" = "bathroom"
+
