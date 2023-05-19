@@ -85,6 +85,7 @@ class Sink:
         _rc: int,
     ) -> None:
         self.logger.info("Connected to %s.", self.hostname)
+        self.mqtt.loop_start()
 
     def _on_disconnect(
         self,
@@ -99,7 +100,8 @@ class Sink:
                 raise MqttError(
                     f"Unrecoverable MQTT connection error : {disconnect_status(rc)}"
                 )
-        self.logger.info("Disconnected from %s.", self.hostname)
+        self.logger.info("Disconnected from %s", self.hostname)
+        self.mqtt.loop_stop()
         # Reconnect if needed
         if self._running:
             self.logger.info("Client still running, will try to reconnect")
@@ -108,8 +110,7 @@ class Sink:
     # MQTT Operation
 
     def connect(self) -> None:
-        self._running = True
-        while True:
+        while self._running:
             self.logger.info("Connecting to %s...", self.hostname)
             try:
                 if self._connected:
@@ -143,7 +144,6 @@ class Sink:
                 self.connect()
 
     def disconnect(self) -> None:
-        self._running = False
         self.logger.info("Disonnecting from %s...", self.hostname)
         self.mqtt.disconnect()
 
@@ -183,15 +183,16 @@ class Sink:
     def start(self) -> None:
         # TODO : Signals
         # TODO : cleanup @ finally
+        self.logger.info("Starting mqttsink...")
+        self._running = True
         self.initialize()
         self.connect()
-        self.mqtt.loop_start()
         while self._running or self._connected:
             self.submit()
             time.sleep(self.LOOP)
-        self.mqtt.loop_stop()
         self.cleanup()
 
     def stop(self) -> None:
-        self.logger.info("Stop signal recieved")
+        self.logger.info("Stopping mqttsink...")
+        self._running = False
         self.disconnect()

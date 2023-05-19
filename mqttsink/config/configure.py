@@ -36,12 +36,12 @@ MAPPER_TAP_TYPE = {
 }
 
 
-def setup_sink(raw) -> Sink:
+def configure_sink(raw) -> Sink:
     config_sink = extract(raw["sink"], MAPPER_SINK)
     return Sink(**config_sink)
 
 
-def setup_taps(raw) -> List[Tap]:
+def configure_taps(raw) -> List[Tap]:
     taps = []
     for tap_type, tap_instances in raw["tap"].items():
         for tap_name, tap_raw in tap_instances.items():
@@ -53,11 +53,11 @@ def setup_taps(raw) -> List[Tap]:
     return taps
 
 
-def setup(path: str) -> Sink:
+def configure(path: str) -> Sink:
     # Parse config
     config_raw = load(path)
     # Create objects
-    sink = setup_sink(config_raw)
-    for tap in setup_taps(config_raw):
+    sink = configure_sink(config_raw)
+    for tap in configure_taps(config_raw):
         sink.register(tap)
     return sink
