@@ -8,6 +8,9 @@ class Drop:
         self.name = name
         self.metric = metric
 
+    def __repr__(self) -> str:
+        return f"<Drop({self.name}/{self.metric} : {self.data})>"
+
     @property
     def path(self) -> List[str]:
         return [self.name, self.metric]

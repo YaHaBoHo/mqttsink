@@ -48,7 +48,7 @@ class AranetTap(Tap):
         if not self.verify:
             urllib3.disable_warnings()
         # --- Internals --- #
-        self._url = f"https://{hostname}/lua/api"
+        self._url = f"https://{self.hostname}/lua/api"
 
     # Tap methods
 

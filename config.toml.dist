@@ -28,3 +28,6 @@ password = "xxx"
           "123" = "kitchen"
           "456" = "bathroom"
 
+  [tap.somneo]
+    [tap.somneo.lab]
+        hostname = "localhost"

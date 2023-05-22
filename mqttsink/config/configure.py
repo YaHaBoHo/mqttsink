@@ -4,6 +4,7 @@ from ..sink import Sink
 from ..tap.core import Tap
 from ..tap.random import RandomTap
 from ..tap.aranet import AranetTap
+from ..tap.somneo import SomneoTap
 from .handler import Parameter, load, extract
 
 MAPPER_LOGGING = [
@@ -34,9 +35,14 @@ MAPPER_TAP_ARANET = [
     Parameter("verify", argtype=bool, default=True),
 ]
 
+MAPPER_TAP_SOMNEO = [
+    Parameter("hostname", argtype=str, required=True),
+]
+
 MAPPER_TAP_TYPE = {
     "random": (RandomTap, MAPPER_TAP_RANDOM),
     "aranet": (AranetTap, MAPPER_TAP_ARANET),
+    "somneo": (SomneoTap, MAPPER_TAP_SOMNEO),
 }
 
 
