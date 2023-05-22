@@ -12,5 +12,11 @@ class RandomTap(Tap):
         self.blueprint = blueprint
 
     def fetch(self) -> Iterable[Drop]:
-        data = {key: random.randint(*minmax) for key, minmax in self.blueprint.items()}
-        return [self.drop(data=data)]
+        return [
+            Drop(
+                name=self.name,
+                metric=key,
+                data=random.randint(*minmax),
+            )
+            for key, minmax in self.blueprint.items()
+        ]

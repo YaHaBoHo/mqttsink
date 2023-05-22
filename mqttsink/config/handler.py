@@ -1,9 +1,6 @@
 from typing import List, Any
 import tomllib
-
-
-class ConfigurationError(Exception):
-    pass
+from ..exceptions import ConfigurationError
 
 
 class Parameter:

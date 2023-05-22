@@ -4,3 +4,7 @@ class MqttSinkError(Exception):
 
 class MqttError(MqttSinkError):
     pass
+
+
+class ConfigurationError(MqttSinkError):
+    pass

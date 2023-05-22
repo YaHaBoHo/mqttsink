@@ -132,6 +132,7 @@ class Sink:
                 time.sleep(self.RECONNECT_INTERVAL)
 
     def publish(self, topic: str, payload: str) -> None:
+        self.logger.debug("Publishing to %s...", topic)
         try:
             msg = self.mqtt.publish(topic, payload=payload)
             msg.wait_for_publish()
@@ -149,34 +150,30 @@ class Sink:
 
     # MQTT Sink
 
-    def _topic(self, *args):
+    @property
+    def path(self) -> List[str]:
+        return [self.name]
+
+    def topic(self, *args):
         return self.DELIMITER.join(args)
 
     def register(self, tap: Tap) -> None:
         self._taps.append(tap)
 
-    def initialize(self):
+    def initialize(self) -> None:
         for tap in self._taps:
             tap.initalize()
-            tap_topics = [
-                self._topic(self.name, tap.SOURCE, tap.name, drop_name)
-                for drop_name in tap.drop_names()
-            ]
-            self.logger.info(
-                "Tap %s initialized. Will publish in %s",
-                tap.fullname,
-                tap_topics,
-            )
+            self.logger.info("Tap %s initialized.", tap.fullname)
 
-    def submit(self):
+    def submit(self) -> None:
         for tap in self._taps:
             for drop in tap.collect():
                 self.publish(
-                    topic=self._topic(self.name, tap.SOURCE, tap.name, drop.name),
+                    topic=self.topic(*self.path, *tap.path, *drop.path),
                     payload=drop.payload,
                 )
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         for tap in self._taps:
             tap.cleanup()
 

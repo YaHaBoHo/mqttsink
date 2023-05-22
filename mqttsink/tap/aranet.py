@@ -23,6 +23,13 @@ def hash_sha256(text, rounds=1):
 class AranetTap(Tap):
     SOURCE = "aranet"
 
+    METRICS = {
+        "t": "temperature",
+        "h": "humidity",
+        "co2": "carbon_dioxide",
+        "batt": "battery",
+    }
+
     def __init__(
         self,
         hostname: str,
@@ -52,12 +59,25 @@ class AranetTap(Tap):
         raw_data = self.poll()
         output_data = []
         for sensor_id, sensor_name in self.sensors.items():
+            # Extract sensor data
             try:
-                output_data.append(
-                    self.drop(name=sensor_name, data=raw_data[sensor_id])
-                )
+                sensor_data = raw_data[sensor_id]
             except KeyError:
-                self.logger.warning(f"No data for Aranet sensor {sensor_name}.")
+                self.logger.warning(f"No data for Aranet sensor {sensor_name}")
+                continue
+            # Process sensor data
+            for metric_id, metric_name in self.METRICS.items():
+                try:
+                    output_data.append(
+                        Drop(
+                            name=sensor_name,
+                            metric=metric_name,
+                            data=sensor_data[metric_id],
+                        )
+                    )
+                except KeyError:
+                    # Metric not supported by sensor, skipping...
+                    pass
         return output_data
 
     # Aranet methods

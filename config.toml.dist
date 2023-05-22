@@ -1,3 +1,6 @@
+[logging]
+level = "INFO"
+
 [sink]
 name = "mqttsink"
 hostname = "localhost"

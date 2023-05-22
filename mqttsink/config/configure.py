@@ -1,3 +1,4 @@
+import logging
 from typing import List
 from ..sink import Sink
 from ..tap.core import Tap
@@ -5,6 +6,9 @@ from ..tap.random import RandomTap
 from ..tap.aranet import AranetTap
 from .handler import Parameter, load, extract
 
+MAPPER_LOGGING = [
+    Parameter("level", argtype=str, default="INFO"),
+]
 
 MAPPER_SINK = [
     Parameter("hostname", argtype=str, default="localhost"),
@@ -36,6 +40,13 @@ MAPPER_TAP_TYPE = {
 }
 
 
+def configure_logging(raw) -> None:
+    config_logging = extract(raw.get("logging"), MAPPER_LOGGING)
+    logging_level = logging.getLevelName(config_logging["level"].upper())
+    print(logging_level)
+    logging.basicConfig(level=logging_level)
+
+
 def configure_sink(raw) -> Sink:
     config_sink = extract(raw["sink"], MAPPER_SINK)
     return Sink(**config_sink)
@@ -56,7 +67,8 @@ def configure_taps(raw) -> List[Tap]:
 def configure(path: str) -> Sink:
     # Parse config
     config_raw = load(path)
-    # Create objects
+    # Process config
+    configure_logging(config_raw)
     sink = configure_sink(config_raw)
     for tap in configure_taps(config_raw):
         sink.register(tap)

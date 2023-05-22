@@ -1,7 +1,7 @@
 import time
 import logging
 import traceback
-from typing import Iterable, Optional
+from typing import List, Any, Iterable, Optional
 from ..drop import Drop
 
 
@@ -16,8 +16,12 @@ class Tap:
         self._next: float = 0
 
     @property
+    def path(self) -> List[str]:
+        return [self.SOURCE, self.name]
+
+    @property
     def fullname(self):
-        return f"{self.SOURCE}:{self.name}"
+        return ":".join(self.path)
 
     @property
     def due(self) -> bool:
@@ -29,15 +33,9 @@ class Tap:
             try:
                 return self.fetch()
             except Exception:
-                self.logger.error(f"Could not collect data ({self.fullname}).")
+                self.logger.error(f"Could not collect data for {self.fullname}")
                 self.logger.error(traceback.format_exc())
         return []
-
-    def drop(self, data: dict, name: Optional[str] = None) -> Drop:
-        return Drop(
-            data={"_tap": self.fullname, **data},
-            name=self.name if name is None else name,
-        )
 
     # Cusomizeable methods
 
