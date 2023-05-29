@@ -54,6 +54,15 @@ class Sink:
         self._mqtt = None
         self._running = False
         self._taps: List[Tap] = []
+        self._next = 0
+
+    @property
+    def interval(self) -> int:
+        return max(self.KEEPALIVE - 5 * self.LOOP, self.LOOP)
+
+    @property
+    def due(self) -> bool:
+        return time.time() >= self._next
 
     @property
     def mqtt(self) -> Client:
@@ -166,6 +175,11 @@ class Sink:
             self.logger.info("Tap %s initialized.", tap.fullname)
 
     def submit(self) -> None:
+        # Heartbeat due?
+        if self.due:
+            self._next = time.time() + self.interval
+            self.publish(topic=self.topic(*self.path, "heartbeat"), payload="0")
+        # Collect taps
         for tap in self._taps:
             for drop in tap.collect():
                 self.publish(
@@ -178,7 +192,6 @@ class Sink:
             tap.cleanup()
 
     def start(self) -> None:
-        # TODO : Signals
         # TODO : cleanup @ finally
         self.logger.info("Starting mqttsink...")
         self._running = True

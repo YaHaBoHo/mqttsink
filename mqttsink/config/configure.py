@@ -49,7 +49,6 @@ MAPPER_TAP_TYPE = {
 def configure_logging(raw) -> None:
     config_logging = extract(raw.get("logging"), MAPPER_LOGGING)
     logging_level = logging.getLevelName(config_logging["level"].upper())
-    print(logging_level)
     logging.basicConfig(level=logging_level)
 
 
