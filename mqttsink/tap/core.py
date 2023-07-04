@@ -50,7 +50,7 @@ class Tap:
         self.initalize()
 
     def reload(self) -> None:
-        self.reload()
+        self.restart()
 
     def fetch(self) -> Iterable[Drop]:
         return []

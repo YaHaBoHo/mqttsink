@@ -6,10 +6,9 @@ from typing import List, Optional
 from paho.mqtt.client import Client
 from .exceptions import MqttError
 from .tap.core import Tap
-from .drop import Drop
 
 
-DISCONNECT_RC = {
+MQTT_RC = {
     0: "Connection successful",
     1: "Incorrect protocol version",
     2: "Invalid client identifier",
@@ -19,8 +18,8 @@ DISCONNECT_RC = {
 }
 
 
-def disconnect_status(rc: int) -> str:
-    return DISCONNECT_RC.get(rc, "Unknown error")
+def mqtt_status(rc: int) -> str:
+    return MQTT_RC.get(rc, "Unknown error")
 
 
 class Sink:
@@ -74,7 +73,6 @@ class Sink:
                     username=self._username,
                     password=self._password,
                 )
-            # >>> TLS will go here <<< #
             _mqtt.on_connect = self._on_connect
             _mqtt.on_disconnect = self._on_disconnect
             self._mqtt = _mqtt
@@ -86,15 +84,17 @@ class Sink:
 
     # MQTT Callbacks
 
-    def _on_connect(
-        self,
-        _client: Client,
-        _userdata: str,
-        _flags: dict,
-        _rc: int,
-    ) -> None:
-        self.logger.info("Connected to %s.", self.hostname)
-        self.mqtt.loop_start()
+    def _handle_failure(self, rc: int):
+        self.logger.error("MQTT connection error : %s", mqtt_status(rc))
+        if rc in self.RECONNECT_ABORT:
+            self._running = False
+            raise MqttError(f"Unrecoverable MQTT connection error : {mqtt_status(rc)}")
+
+    def _on_connect(self, _client: Client, _data: str, _flags: dict, rc: int) -> None:
+        if rc == 0:
+            self.logger.info("Connected to %s", self.hostname)
+        else:
+            self._handle_failure(rc)
 
     def _on_disconnect(
         self,
@@ -102,13 +102,8 @@ class Sink:
         _userdata: str,
         rc: int,
     ) -> None:
-        if rc > 0:
-            self.logger.error("MQTT connection error : %s", disconnect_status(rc))
-            if rc in self.RECONNECT_ABORT:
-                self._running = False
-                raise MqttError(
-                    f"Unrecoverable MQTT connection error : {disconnect_status(rc)}"
-                )
+        if rc != 0:
+            self._handle_failure(rc)
         self.logger.info("Disconnected from %s", self.hostname)
         self.mqtt.loop_stop()
         # Reconnect if needed
@@ -130,6 +125,7 @@ class Sink:
                         port=self.port,
                         keepalive=self.KEEPALIVE,
                     )
+                    self.mqtt.loop_start()
                 return
             except (socket.timeout, ConnectionError) as err:
                 self.logger.info(
