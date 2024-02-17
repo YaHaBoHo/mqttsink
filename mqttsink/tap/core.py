@@ -1,7 +1,7 @@
 import time
 import logging
 import traceback
-from typing import List, Any, Iterable, Optional
+from typing import List, Iterable
 from ..drop import Drop
 
 
@@ -31,10 +31,12 @@ class Tap:
         if self.due:
             self._next = time.time() + self.interval
             try:
-                return self.fetch()
-            except Exception:
-                self.logger.error(f"Could not collect data for {self.fullname}")
-                self.logger.error(traceback.format_exc())
+                drops = self.fetch()
+                self.logger.info("Collected %s drops for %s", len(drops), self.fullname)
+                return drops
+            except Exception:  # pylint: disable=broad-exception-caught
+                self.logger.error("Could not collect data for %s", self.fullname)
+                self.logger.debug(traceback.format_exc())
         return []
 
     # Cusomizeable methods

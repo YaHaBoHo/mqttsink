@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mqttsink"
-version = "0.1.4"
+version = "0.1.5"
 description = ""
 authors = ["Yann Belin <yann.belin@expereo.com>"]
 readme = "README.md"

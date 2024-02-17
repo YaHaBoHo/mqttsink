@@ -1,11 +1,11 @@
 import logging
 from typing import List
-from ..sink import Sink
-from ..tap.core import Tap
-from ..tap.random import RandomTap
-from ..tap.aranet import AranetTap
-from ..tap.somneo import SomneoTap
-from .handler import Parameter, load, extract
+from mqttsink.sink import Sink
+from mqttsink.tap.core import Tap
+from mqttsink.tap.random import RandomTap
+from mqttsink.tap.aranet import AranetTap
+from mqttsink.tap.somneo import SomneoTap
+from mqttsink.config.handler import Parameter, load, extract
 
 MAPPER_LOGGING = [
     Parameter("level", argtype=str, default="INFO"),

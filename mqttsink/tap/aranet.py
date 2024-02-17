@@ -37,6 +37,7 @@ class AranetTap(Tap):
         password: str,
         sensors: dict,
         verify: bool = False,
+        timeout: int = 5,
         **kwargs,
     ) -> None:
         super().__init__(**kwargs)
@@ -45,6 +46,8 @@ class AranetTap(Tap):
         self.password = password
         self.sensors = sensors
         self.verify = verify
+        self.timeout = timeout
+        # --- Initilization ---#
         if not self.verify:
             urllib3.disable_warnings()
         # --- Internals --- #
@@ -63,7 +66,7 @@ class AranetTap(Tap):
             try:
                 sensor_data = raw_data[sensor_id]
             except KeyError:
-                self.logger.warning(f"No data for Aranet sensor {sensor_name}")
+                self.logger.warning("No data for Aranet sensor %s", sensor_name)
                 continue
             # Process sensor data
             for metric_id, metric_name in self.METRICS.items():
@@ -88,7 +91,12 @@ class AranetTap(Tap):
         return hash_sha256(text=salt_onetime + permanent_hash)
 
     def post(self, payload: dict) -> dict:
-        return requests.post(self._url, json=payload, verify=self.verify).json()
+        return requests.post(
+            self._url,
+            json=payload,
+            verify=self.verify,
+            timeout=self.timeout,
+        ).json()
 
     def poll(self) -> dict:
         # Fetch salts from API

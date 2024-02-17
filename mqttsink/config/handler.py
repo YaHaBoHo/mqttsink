@@ -1,6 +1,6 @@
 from typing import List, Any
 import tomllib
-from ..exceptions import ConfigurationError
+from mqttsink.exceptions import ConfigurationError
 
 
 class Parameter:

@@ -142,7 +142,7 @@ class Sink:
             msg = self.mqtt.publish(topic, payload=payload)
             msg.wait_for_publish()
         except TypeError as err:
-            # TODO : Custom exception
+            # IMPROVE : Custom exception
             self.logger.error("Could not publish message : %s", err)
         except RuntimeError as err:
             self.logger.error("Encoutered MQTT error : %s", err)
@@ -188,7 +188,7 @@ class Sink:
             tap.cleanup()
 
     def start(self) -> None:
-        # TODO : cleanup @ finally
+        # IMPROVE : cleanup @ finally
         self.logger.info("Starting mqttsink...")
         self._running = True
         self.initialize()

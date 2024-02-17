@@ -1,4 +1,3 @@
-import random
 from typing import Iterable
 import requests
 import urllib3
@@ -18,10 +17,12 @@ class SomneoTap(Tap):
         "mssnd": "sound_pressure",
     }
 
-    def __init__(self, hostname: str, verify: bool = False, **kwargs):
+    def __init__(self, hostname: str, verify: bool = False, timeout: int = 5, **kwargs):
         super().__init__(**kwargs)
         self.hostname = hostname
         self.verify = verify
+        self.timeout = timeout
+        # --- Initilization ---#
         if not self.verify:
             urllib3.disable_warnings()
         # --- Internals --- #
@@ -31,7 +32,11 @@ class SomneoTap(Tap):
         return self.fetch_sensors()
 
     def get(self, path: str) -> dict:
-        return requests.get(f"{self._url}/{path}", verify=self.verify).json()
+        return requests.get(
+            f"{self._url}/{path}",
+            verify=self.verify,
+            timeout=self.timeout,
+        ).json()
 
     def fetch_sensors(self) -> Iterable[Drop]:
         raw_data = self.get(path="wusrd")
