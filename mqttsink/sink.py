@@ -56,6 +56,9 @@ class Sink:
         self._taps: List[Tap] = []
         self._next = 0
 
+    def __repr__(self) -> str:
+        return f"<Sink({self.name} @ {self.hostname} | {len(self._taps)} taps)>"
+
     @property
     def interval(self) -> int:
         return max(self.KEEPALIVE - 5 * self.LOOP, self.LOOP)

@@ -1,6 +1,7 @@
 import os
 import signal
-from mqttsink.config.configure import configure
+from mqttsink.config import configure
+
 
 CONFIG_PATH = os.environ.get("MQTTSINK_CONFIG_PATH", "config.toml")
 
