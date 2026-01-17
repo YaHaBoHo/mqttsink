@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 paho-mqtt = "^1.6.1"
 requests = "^2.30.0"
+pydantic = "^2.12.5"
 
 
 [tool.poetry.group.dev.dependencies]
