@@ -1,8 +1,7 @@
-from typing import Iterable
 import requests
 import urllib3
-from .core import Tap
-from ..drop import Drop
+from mqttsink.tap.core import Tap
+from mqttsink.drop import Drop
 
 # https://www.domoticz.com/forum/viewtopic.php?t=33033
 
@@ -28,7 +27,7 @@ class SomneoTap(Tap):
         # --- Internals --- #
         self._url = f"https://{self.hostname}/di/v1/products/1"
 
-    def fetch(self) -> Iterable[Drop]:
+    def fetch(self) -> list[Drop]:
         return self.fetch_sensors()
 
     def get(self, path: str) -> dict:
@@ -38,7 +37,7 @@ class SomneoTap(Tap):
             timeout=self.timeout,
         ).json()
 
-    def fetch_sensors(self) -> Iterable[Drop]:
+    def fetch_sensors(self) -> list[Drop]:
         raw_data = self.get(path="wusrd")
         output_data = []
         # Process sensor data

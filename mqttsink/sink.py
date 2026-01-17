@@ -4,8 +4,8 @@ import socket
 import logging
 from typing import List, Optional
 from paho.mqtt.client import Client
-from .exceptions import MqttError
-from .tap.core import Tap
+from mqttsink.exceptions import MqttError
+from mqttsink.tap.core import Tap
 
 
 MQTT_RC = {
@@ -23,6 +23,7 @@ def mqtt_status(rc: int) -> str:
 
 
 class Sink:
+
     LOOP: int = 1
     NAME: Optional[str] = None
     DELIMITER: str = "/"
@@ -91,7 +92,7 @@ class Sink:
             raise MqttError(f"Unrecoverable MQTT connection error : {mqtt_status(rc)}")
 
     def _on_connect(self, _client: Client, _data: str, _flags: dict, rc: int) -> None:
-        if rc == 0:
+        if rc == 0:  # pylint: disable=C1805
             self.logger.info("Connected to %s", self.hostname)
         else:
             self._handle_failure(rc)
@@ -102,7 +103,7 @@ class Sink:
         _userdata: str,
         rc: int,
     ) -> None:
-        if rc != 0:
+        if rc != 0:  # pylint: disable=C1805
             self._handle_failure(rc)
         self.logger.info("Disconnected from %s", self.hostname)
         self.mqtt.loop_stop()

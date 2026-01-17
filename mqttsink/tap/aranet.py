@@ -1,10 +1,9 @@
-from typing import Iterable
 from binascii import hexlify
 from hashlib import sha256
 import requests
 import urllib3
-from .core import Tap
-from ..drop import Drop
+from mqttsink.tap.core import Tap
+from mqttsink.drop import Drop
 
 
 ENCODING = "utf-8"
@@ -58,7 +57,7 @@ class AranetTap(Tap):
     def drop_names(self):
         return list(self.sensors.values())
 
-    def fetch(self) -> Iterable[Drop]:
+    def fetch(self) -> list[Drop]:
         raw_data = self.poll()
         output_data = []
         for sensor_id, sensor_name in self.sensors.items():

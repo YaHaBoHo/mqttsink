@@ -1,7 +1,6 @@
 import random
-from typing import Iterable
-from .core import Tap
-from ..drop import Drop
+from mqttsink.tap.core import Tap
+from mqttsink.drop import Drop
 
 
 class RandomTap(Tap):
@@ -11,7 +10,7 @@ class RandomTap(Tap):
         super().__init__(**kwargs)
         self.blueprint = blueprint
 
-    def fetch(self) -> Iterable[Drop]:
+    def fetch(self) -> list[Drop]:
         return [
             Drop(
                 name=self.name,

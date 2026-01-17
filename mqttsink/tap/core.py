@@ -1,8 +1,7 @@
 import time
 import logging
 import traceback
-from typing import List, Iterable
-from ..drop import Drop
+from mqttsink.drop import Drop
 
 
 class Tap:
@@ -16,7 +15,7 @@ class Tap:
         self._next: float = 0
 
     @property
-    def path(self) -> List[str]:
+    def path(self) -> list[str]:
         return [self.SOURCE, self.name]
 
     @property
@@ -27,7 +26,7 @@ class Tap:
     def due(self) -> bool:
         return time.time() >= self._next
 
-    def collect(self) -> Iterable["Drop"]:
+    def collect(self) -> list["Drop"]:
         if self.due:
             self._next = time.time() + self.interval
             try:
@@ -54,7 +53,7 @@ class Tap:
     def reload(self) -> None:
         self.restart()
 
-    def fetch(self) -> Iterable[Drop]:
+    def fetch(self) -> list[Drop]:
         return []
 
     def cleanup(self) -> None:

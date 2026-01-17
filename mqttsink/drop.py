@@ -3,7 +3,7 @@ from typing import List
 
 
 class Drop:
-    def __init__(self, name: str, metric: str, data: str) -> None:
+    def __init__(self, name: str, metric: str, data: int | float | str) -> None:
         self.data = data
         self.name = name
         self.metric = metric
