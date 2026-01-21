@@ -1,33 +1,26 @@
-[logging]
-level = "INFO"
+loglevel = 20
 
-[sink]
-name = "mqttsink"
-hostname = "localhost"
+[mqtt]
+name = "example"
+hostname = "xxx"
 port = 1883
-username = "xxx"
+username = "mqttsink"
 password = "xxx"
 
+[[system]]
+name = "example"
 
-[tap]
+[[aranet]]
+name = "example"
+hostname = "xxx"
+username = "xxx"
+password = "xxx"
+verify = false
+[aranet.sensors]
+  "123" = "kitchen"
+  "465" = "garden"
 
-  [tap.random]
-    [tap.random.lab]
-        interval = 10
-        [tap.random.test.blueprint]
-          foo = [10, 20]
-          bar = [0, 100]
+[[somneo]]
+name = "example"
+hostname = "xxx"
 
-  [tap.aranet]
-    [tap.aranet.lab]
-        hostname = "localhost"
-        username = "xxx"
-        password = "xxx"
-        verify = false
-        [tap.aranet.homelab.sensors]
-          "123" = "kitchen"
-          "456" = "bathroom"
-
-  [tap.somneo]
-    [tap.somneo.lab]
-        hostname = "localhost"

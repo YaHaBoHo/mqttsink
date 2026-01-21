@@ -4,6 +4,8 @@ from typing import Self, Literal, Generator
 from pydantic import BaseModel
 from mqttsink.sink import Sink
 from mqttsink.tap.core import Tap
+
+# from mqttsink.tap.system import SystemTap
 from mqttsink.tap.aranet import AranetTap
 from mqttsink.tap.somneo import SomneoTap
 
@@ -27,13 +29,19 @@ class MqttConfig(BaseModel):
 
 class TapConfig(BaseModel):
     _tap: type[Tap]
+    name: str | None = None
     interval: int = 300
 
     def spawn(self) -> Tap:
         return self._tap(**self.model_dump())  # TODO : from_config()
 
 
-class AranetConfig(TapConfig):
+# class SystemTapConfig(TapConfig):
+#     _tap = SystemTap
+#     paths: list[str] = ["/"]
+
+
+class AranetTapConfig(TapConfig):
     _tap = AranetTap
     hostname: str
     username: str
@@ -42,7 +50,7 @@ class AranetConfig(TapConfig):
     verify: bool = True
 
 
-class SomneoConfig(TapConfig):
+class SomneoTapConfig(TapConfig):
     _tap = SomneoTap
     hostname: str
 
@@ -50,8 +58,9 @@ class SomneoConfig(TapConfig):
 class SinkConfig(BaseModel):
     loglevel: LogLevel
     mqtt: MqttConfig
-    aranet: list[AranetConfig] = []
-    somneo: list[SomneoConfig] = []
+    # system: list[SystemTapConfig] = []
+    aranet: list[AranetTapConfig] = []
+    somneo: list[SomneoTapConfig] = []
 
     @classmethod
     def from_file(cls, path: str) -> Self:
@@ -59,6 +68,7 @@ class SinkConfig(BaseModel):
 
     @property
     def taps(self) -> Generator[TapConfig, None, None]:
+        # yield from self.system
         yield from self.aranet
         yield from self.somneo
 

@@ -9,7 +9,7 @@ class Tap:
 
     logger = logging.getLogger("mqttsink.tap")
 
-    def __init__(self, name: str = "core", interval=300):
+    def __init__(self, name: str, interval=300):
         self.name: str = name
         self.interval: int = interval
         self._next: float = 0
@@ -26,7 +26,7 @@ class Tap:
     def due(self) -> bool:
         return time.time() >= self._next
 
-    def collect(self) -> list["Drop"]:
+    def collect(self) -> list[Drop]:
         if self.due:
             self._next = time.time() + self.interval
             try:
@@ -38,7 +38,7 @@ class Tap:
                 self.logger.debug(traceback.format_exc())
         return []
 
-    # Cusomizeable methods
+    # Customizeable methods
 
     def drop_names(self):
         return [self.name]

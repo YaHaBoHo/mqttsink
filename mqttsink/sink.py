@@ -57,7 +57,8 @@ class Sink:
         self._next = 0
 
     def __repr__(self) -> str:
-        return f"<Sink({self.name} @ {self.hostname} | {len(self._taps)} taps)>"
+        taps = ", ".join(t.name for t in self._taps)
+        return f"<Sink({self.name} @ {self.hostname} | {taps} )>"
 
     @property
     def interval(self) -> int:
