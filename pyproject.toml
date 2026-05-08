@@ -4,6 +4,7 @@ version = "1.0.0"
 description = "MQTT Sink"
 authors = [{name = "Yann Belin", email = "yann.belin@pm.me"}]
 readme = "README.md"
+python = ">=3.14,<4"
 
 [tool.poetry.dependencies]
 python = "^3.14"
