@@ -6,15 +6,14 @@ authors = ["Yann Belin <yann.belin@expereo.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-paho-mqtt = "^1.6.1"
-requests = "^2.30.0"
-pydantic = "^2.12.5"
-psutil = "^7.2.1"
+python = "^3.14"
+paho-mqtt = "^2.1.0"
+requests = "^2.33.1"
+pydantic = "^2.13.4"
+psutil = "^7.2.2"
 
-
-[tool.poetry.group.dev.dependencies]
-types-paho-mqtt = "^1.6.0.6"
+[tool.poetry.scripts]
+mqttsink = 'mqttsink.run:run'
 
 [build-system]
 requires = ["poetry-core"]
