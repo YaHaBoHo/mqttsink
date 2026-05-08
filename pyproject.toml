@@ -1,12 +1,12 @@
-[tool.poetry]
+[project]
 name = "mqttsink"
 version = "1.0.0"
-description = ""
-authors = ["Yann Belin <yann.belin@expereo.com>"]
+description = "MQTT Sink"
+authors = [{name = "Yann Belin", email = "yann.belin@pm.me"}]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "~3.14"
+python = "^3.14"
 paho-mqtt = "^2.1.0"
 requests = "^2.33.1"
 pydantic = "^2.13.4"
